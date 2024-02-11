@@ -1,0 +1,8 @@
+-- Load the dataset
+employee_records = LOAD 'employee_data.txt' USING PigStorage('\t') AS (RegNo:int, EmpName:chararray, Age:int, Salary:int);
+
+-- Transform each record using map transformation
+transformed_records = FOREACH employee_records GENERATE EmpName AS name, Age * 2 AS double_age, Salary;
+
+-- Store the transformed records
+STORE transformed_records INTO 'output' USING PigStorage(',');
