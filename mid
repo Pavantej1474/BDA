@@ -1,0 +1,17 @@
+-- Load the user activity logs
+user_logs = LOAD 'path/to/user_activity_logs.txt' USING PigStorage(',') AS (user_id:int, timestamp:chararray, action:chararray);
+
+-- Group the logs by user_id
+grouped_logs = GROUP user_logs BY user_id;
+
+-- Filter users with more than 3 actions
+filtered_users = FILTER grouped_logs BY COUNT(user_logs) > 3;
+
+-- Flatten the result to get individual records
+result = FOREACH filtered_users GENERATE FLATTEN(user_logs);
+
+-- Store the result
+STORE result INTO 'path/to/output';
+
+-- Display the result
+DUMP result;
